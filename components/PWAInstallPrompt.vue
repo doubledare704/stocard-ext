@@ -17,8 +17,30 @@
       </div>
 
       <!-- Simple Visual Guide -->
-      <div v-if="!deferredPrompt" class="mb-4">
-        <SimpleInstallGuide />
+      <div v-if="!deferredPrompt" class="mb-4 text-center">
+        <!-- Animated Install Icon -->
+        <div class="relative mb-4">
+          <div class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-105">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+          </div>
+
+          <!-- Animated Arrow -->
+          <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8l-8 8-8-8"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform-specific hint -->
+        <div class="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+          <span class="text-lg">{{ browserIcon }}</span>
+          <span>{{ browserHint }}</span>
+        </div>
       </div>
 
       <!-- Action Buttons -->
@@ -42,9 +64,18 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { usePWAInstall } from '~/composables/usePWAInstall'
 
 const showInstallPrompt = ref(false)
-const deferredPrompt = ref(null)
+const {
+  deferredPrompt,
+  isInstallable,
+  isAppInstalled,
+  triggerInstall: triggerNativeInstall,
+  dismissInstall,
+  initPWAInstall,
+  cleanupPWAInstall
+} = usePWAInstall()
 
 // Simple browser detection and hints
 const isIOS = computed(() => {
@@ -73,49 +104,19 @@ const browserHint = computed(() => {
   return 'Browser Menu → Install'
 })
 
-// Check if app is already installed
-const isAppInstalled = () => {
-  return window.matchMedia('(display-mode: standalone)').matches ||
-         window.navigator.standalone ||
-         document.referrer.includes('android-app://')
-}
-
 // Check if user has already dismissed the prompt
 const hasUserDismissed = () => {
   return localStorage.getItem('pwa-install-dismissed') === 'true'
 }
 
-// Handle the beforeinstallprompt event
-const handleBeforeInstallPrompt = (e) => {
-  // Prevent the mini-infobar from appearing on mobile
-  e.preventDefault()
-  
-  // Save the event so it can be triggered later
-  deferredPrompt.value = e
-  
-  // Show our custom install prompt if conditions are met
-  if (!isAppInstalled() && !hasUserDismissed()) {
-    // Delay showing the prompt slightly for better UX
-    setTimeout(() => {
-      showInstallPrompt.value = true
-    }, 3000) // Show after 3 seconds
-  }
-}
-
 // Install the app
 const installApp = async () => {
   if (deferredPrompt.value) {
-    // Show the native install prompt
-    deferredPrompt.value.prompt()
-
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.value.userChoice
-
-    console.log('Install prompt outcome:', outcome)
-
-    // Clear the deferredPrompt and hide our prompt
-    deferredPrompt.value = null
-    showInstallPrompt.value = false
+    // Use the composable's install function
+    const success = await triggerNativeInstall()
+    if (success) {
+      showInstallPrompt.value = false
+    }
   } else {
     // For browsers without native prompt support (like iOS Safari)
     // Just dismiss our prompt - the user will use browser's native method
@@ -129,7 +130,9 @@ const installApp = async () => {
       document.body.appendChild(toast)
 
       setTimeout(() => {
-        document.body.removeChild(toast)
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast)
+        }
       }, 4000)
     }
   }
@@ -138,49 +141,36 @@ const installApp = async () => {
 // Dismiss the prompt
 const dismissPrompt = () => {
   showInstallPrompt.value = false
-  localStorage.setItem('pwa-install-dismissed', 'true')
-  
-  // Allow showing again after 7 days
-  setTimeout(() => {
-    localStorage.removeItem('pwa-install-dismissed')
-  }, 7 * 24 * 60 * 60 * 1000) // 7 days
-}
-
-// Show simple browser instructions
-const showBrowserInstructions = () => {
-  // Simply show the install prompt with a helpful message
-  showInstallPrompt.value = true
-}
-
-// Handle app installed event
-const handleAppInstalled = () => {
-  console.log('PWA was installed')
-  showInstallPrompt.value = false
+  dismissInstall()
 }
 
 // Handle custom trigger event
 const handleTriggerInstall = () => {
-  if (!isAppInstalled() && !hasUserDismissed()) {
+  if (!isAppInstalled.value && !hasUserDismissed()) {
     showInstallPrompt.value = true
   } else if (!deferredPrompt.value) {
-    showBrowserInstructions()
+    showInstallPrompt.value = true
   } else {
     installApp()
   }
 }
 
 onMounted(() => {
-  // Listen for the beforeinstallprompt event
-  window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
-  // Listen for the appinstalled event
-  window.addEventListener('appinstalled', handleAppInstalled)
+  // Initialize PWA install detection
+  initPWAInstall()
 
   // Listen for custom trigger event
   window.addEventListener('trigger-pwa-install', handleTriggerInstall)
 
+  // Listen for custom show prompt event
+  window.addEventListener('show-pwa-install-prompt', () => {
+    if (!isAppInstalled.value && !hasUserDismissed()) {
+      showInstallPrompt.value = true
+    }
+  })
+
   // For iOS devices, show prompt after some time since they don't fire beforeinstallprompt
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isAppInstalled() && !hasUserDismissed()) {
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isAppInstalled.value && !hasUserDismissed()) {
     setTimeout(() => {
       showInstallPrompt.value = true
     }, 5000) // Show after 5 seconds on iOS
@@ -188,8 +178,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-  window.removeEventListener('appinstalled', handleAppInstalled)
+  cleanupPWAInstall()
   window.removeEventListener('trigger-pwa-install', handleTriggerInstall)
+  window.removeEventListener('show-pwa-install-prompt', () => {})
 })
 </script>

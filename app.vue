@@ -84,6 +84,9 @@
 
     <!-- PWA Install Prompt -->
     <PWAInstallPrompt />
+
+    <!-- PWA Debugger (development only) -->
+    <PWADebugger />
   </div>
 </template>
 
