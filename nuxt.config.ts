@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     },
     client: {
       installPrompt: true,
+      periodicSyncForUpdates: 20,
     },
     devOptions: {
       enabled: true,
@@ -21,6 +22,7 @@ export default defineNuxtConfig({
       type: 'module',
     },
     manifest: {
+      id: '/',
       name: 'StoreCard Manager',
       short_name: 'StoreCard',
       description: 'Manage your store loyalty cards and barcodes offline',
@@ -30,22 +32,26 @@ export default defineNuxtConfig({
       orientation: 'portrait',
       scope: '/',
       start_url: '/',
+      categories: ['productivity', 'utilities'],
+      lang: 'en',
       icons: [
         {
           src: 'pwa-192x192.png',
           sizes: '192x192',
           type: 'image/png',
+          purpose: 'any',
         },
         {
           src: 'pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
+          purpose: 'any',
         },
         {
           src: 'pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
-          purpose: 'any maskable',
+          purpose: 'maskable',
         },
       ],
     },

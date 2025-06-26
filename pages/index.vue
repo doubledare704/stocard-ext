@@ -14,6 +14,29 @@
       </svg>
     </div>
 
+    <!-- Install App Banner (only show if not installed) -->
+    <div v-if="!isAppInstalled" class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-blue-900 dark:text-blue-100">Install App</p>
+            <p class="text-xs text-blue-700 dark:text-blue-300">Add to home screen for quick access</p>
+          </div>
+        </div>
+        <button
+          @click="triggerInstall"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-md transition-colors"
+        >
+          Install
+        </button>
+      </div>
+    </div>
+
     <!-- Add New Card Button -->
     <NuxtLink to="/add" class="btn-primary">
       <div class="flex items-center justify-center space-x-2">
@@ -137,6 +160,7 @@ const loading = ref(true)
 const searchQuery = ref('')
 const showDeleteModal = ref(false)
 const cardToDelete = ref(null)
+const isAppInstalled = ref(false)
 
 // Computed
 const filteredCards = computed(() => {
@@ -203,6 +227,20 @@ const formatBarcodeDisplay = (data, type) => {
   return generateBarcodeDisplay(data, type)
 }
 
+// PWA Install functionality
+const checkIfAppInstalled = () => {
+  if (process.client) {
+    isAppInstalled.value = window.matchMedia('(display-mode: standalone)').matches ||
+                          window.navigator.standalone ||
+                          document.referrer.includes('android-app://')
+  }
+}
+
+const triggerInstall = () => {
+  // This will trigger the PWAInstallPrompt component
+  window.dispatchEvent(new CustomEvent('trigger-pwa-install'))
+}
+
 const formatDate = (dateString) => {
   const date = new Date(dateString)
   const now = new Date()
@@ -219,5 +257,6 @@ const formatDate = (dateString) => {
 // Lifecycle
 onMounted(() => {
   loadCards()
+  checkIfAppInstalled()
 })
 </script>

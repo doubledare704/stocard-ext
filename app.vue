@@ -38,6 +38,16 @@
               </svg>
             </NuxtLink>
             <NuxtLink
+              to="/pwa-test"
+              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              :class="{ 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400': $route.path === '/pwa-test' }"
+              title="PWA Install Test"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+            </NuxtLink>
+            <NuxtLink
               to="/add"
               class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               :class="{ 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400': $route.path === '/add' }"
@@ -71,6 +81,9 @@
     <main class="max-w-md mx-auto px-4 py-6">
       <NuxtPage />
     </main>
+
+    <!-- PWA Install Prompt -->
+    <PWAInstallPrompt />
   </div>
 </template>
 
