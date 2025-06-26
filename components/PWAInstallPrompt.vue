@@ -1,46 +1,39 @@
 <template>
   <div v-if="showInstallPrompt" class="fixed bottom-4 left-4 right-4 z-50 max-w-md mx-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4">
-      <div class="flex items-start space-x-3">
-        <div class="flex-shrink-0">
-          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-            </svg>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            Install StoreCard App
-          </h3>
-          <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            Add to your home screen for quick access to your store cards
-          </p>
-        </div>
-        
-        <button
-          @click="dismissPrompt"
-          class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-6">
+      <!-- Header with App Icon -->
+      <div class="text-center mb-4">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
           </svg>
-        </button>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+          Install StoreCard
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Quick access to your loyalty cards
+        </p>
       </div>
-      
-      <div class="mt-4 flex space-x-2">
+
+      <!-- Simple Visual Guide -->
+      <div v-if="!deferredPrompt" class="mb-4">
+        <SimpleInstallGuide />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-3">
         <button
           @click="installApp"
-          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md"
         >
-          Install
+          {{ deferredPrompt ? '📱 Install Now' : '📱 Show Me How' }}
         </button>
         <button
           @click="dismissPrompt"
-          class="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium py-2 px-3 rounded-md transition-colors"
+          class="w-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-sm font-medium py-2 transition-colors"
         >
-          Not now
+          Maybe later
         </button>
       </div>
     </div>
@@ -48,10 +41,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const showInstallPrompt = ref(false)
 const deferredPrompt = ref(null)
+
+// Simple browser detection and hints
+const isIOS = computed(() => {
+  if (process.client) {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent)
+  }
+  return false
+})
+
+const isAndroid = computed(() => {
+  if (process.client) {
+    return /Android/.test(navigator.userAgent)
+  }
+  return false
+})
+
+const browserIcon = computed(() => {
+  if (isIOS.value) return '🍎'
+  if (isAndroid.value) return '🤖'
+  return '💻'
+})
+
+const browserHint = computed(() => {
+  if (isIOS.value) return 'Share → Add to Home'
+  if (isAndroid.value) return 'Menu → Install'
+  return 'Browser Menu → Install'
+})
 
 // Check if app is already installed
 const isAppInstalled = () => {
@@ -84,27 +104,35 @@ const handleBeforeInstallPrompt = (e) => {
 
 // Install the app
 const installApp = async () => {
-  if (!deferredPrompt.value) {
-    // Fallback: show browser-specific instructions
-    showBrowserInstructions()
-    return
-  }
-  
-  // Show the install prompt
-  deferredPrompt.value.prompt()
-  
-  // Wait for the user to respond to the prompt
-  const { outcome } = await deferredPrompt.value.userChoice
-  
-  if (outcome === 'accepted') {
-    console.log('User accepted the install prompt')
+  if (deferredPrompt.value) {
+    // Show the native install prompt
+    deferredPrompt.value.prompt()
+
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.value.userChoice
+
+    console.log('Install prompt outcome:', outcome)
+
+    // Clear the deferredPrompt and hide our prompt
+    deferredPrompt.value = null
+    showInstallPrompt.value = false
   } else {
-    console.log('User dismissed the install prompt')
+    // For browsers without native prompt support (like iOS Safari)
+    // Just dismiss our prompt - the user will use browser's native method
+    showInstallPrompt.value = false
+
+    // Show a simple toast-like message
+    if (process.client) {
+      const toast = document.createElement('div')
+      toast.className = 'fixed top-4 left-4 right-4 z-50 max-w-md mx-auto bg-blue-600 text-white p-3 rounded-lg shadow-lg text-center text-sm'
+      toast.textContent = `${browserHint.value} to install this app`
+      document.body.appendChild(toast)
+
+      setTimeout(() => {
+        document.body.removeChild(toast)
+      }, 4000)
+    }
   }
-  
-  // Clear the deferredPrompt
-  deferredPrompt.value = null
-  showInstallPrompt.value = false
 }
 
 // Dismiss the prompt
@@ -118,28 +146,10 @@ const dismissPrompt = () => {
   }, 7 * 24 * 60 * 60 * 1000) // 7 days
 }
 
-// Show browser-specific instructions
+// Show simple browser instructions
 const showBrowserInstructions = () => {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-  const isAndroid = /Android/.test(navigator.userAgent)
-  
-  let message = 'To install this app:\n\n'
-  
-  if (isIOS) {
-    message += '1. Tap the Share button (square with arrow)\n'
-    message += '2. Scroll down and tap "Add to Home Screen"\n'
-    message += '3. Tap "Add" to confirm'
-  } else if (isAndroid) {
-    message += '1. Tap the menu button (three dots)\n'
-    message += '2. Tap "Add to Home screen" or "Install app"\n'
-    message += '3. Tap "Add" to confirm'
-  } else {
-    message += '1. Click the install icon in your browser\'s address bar\n'
-    message += '2. Or use your browser\'s menu to "Install" or "Add to Home Screen"'
-  }
-  
-  alert(message)
-  dismissPrompt()
+  // Simply show the install prompt with a helpful message
+  showInstallPrompt.value = true
 }
 
 // Handle app installed event
