@@ -1,15 +1,15 @@
 <template>
   <div v-if="loading" class="text-center py-8">
-    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-    <p class="mt-2 text-gray-600">Loading card...</p>
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">Loading card...</p>
   </div>
 
   <div v-else-if="!card" class="text-center py-12">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
     </svg>
-    <h3 class="mt-4 text-lg font-medium text-gray-900">Card not found</h3>
-    <p class="mt-2 text-gray-600">The store card you're looking for doesn't exist</p>
+    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">Card not found</h3>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">The store card you're looking for doesn't exist</p>
     <NuxtLink to="/" class="mt-4 btn-primary max-w-xs mx-auto">
       Back to Cards
     </NuxtLink>
@@ -18,13 +18,13 @@
   <div v-else class="space-y-6">
     <!-- Header -->
     <div class="flex items-center justify-between">
-      <NuxtLink to="/" class="text-gray-600 hover:text-gray-900">
+      <NuxtLink to="/" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       </NuxtLink>
       <div class="flex space-x-2">
-        <NuxtLink :to="`/add?edit=${card.id}`" class="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+        <NuxtLink :to="`/add?edit=${card.id}`" class="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
           </svg>
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Store Card Display -->
-    <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg">
+    <div class="bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-500 dark:to-blue-700 rounded-xl p-6 text-white shadow-lg">
       <div class="flex items-center justify-between mb-4">
         <h1 class="text-2xl font-bold">{{ card.storeName }}</h1>
         <svg class="w-8 h-8 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,8 +95,8 @@
       <!-- Brightness Control -->
       <div class="card">
         <div class="flex items-center justify-between mb-3">
-          <label class="text-sm font-medium text-gray-700">Screen Brightness</label>
-          <span class="text-sm text-gray-500">{{ Math.round(brightness * 100) }}%</span>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Screen Brightness</label>
+          <span class="text-sm text-gray-500 dark:text-gray-400">{{ Math.round(brightness * 100) }}%</span>
         </div>
         <input
           v-model="brightness"
@@ -104,10 +104,10 @@
           min="0.3"
           max="1"
           step="0.1"
-          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
           @input="adjustBrightness"
         >
-        <p class="text-xs text-gray-500 mt-2">
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
           Increase brightness for better barcode scanning
         </p>
       </div>
@@ -128,27 +128,27 @@
 
     <!-- Card Info -->
     <div class="card">
-      <h3 class="text-lg font-semibold text-gray-900 mb-3">Card Information</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Card Information</h3>
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
-          <span class="text-gray-600">Store Name:</span>
-          <span class="font-medium">{{ card.storeName }}</span>
+          <span class="text-gray-600 dark:text-gray-400">Store Name:</span>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{{ card.storeName }}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-600">Barcode Type:</span>
-          <span class="font-medium capitalize">{{ card.barcodeType }}</span>
+          <span class="text-gray-600 dark:text-gray-400">Barcode Type:</span>
+          <span class="font-medium capitalize text-gray-900 dark:text-gray-100">{{ card.barcodeType }}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-600">Data Length:</span>
-          <span class="font-medium">{{ card.barcodeData.length }} characters</span>
+          <span class="text-gray-600 dark:text-gray-400">Data Length:</span>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{{ card.barcodeData.length }} characters</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-600">Created:</span>
-          <span class="font-medium">{{ formatDate(card.createdAt) }}</span>
+          <span class="text-gray-600 dark:text-gray-400">Created:</span>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{{ formatDate(card.createdAt) }}</span>
         </div>
         <div v-if="card.updatedAt !== card.createdAt" class="flex justify-between">
-          <span class="text-gray-600">Last Updated:</span>
-          <span class="font-medium">{{ formatDate(card.updatedAt) }}</span>
+          <span class="text-gray-600 dark:text-gray-400">Last Updated:</span>
+          <span class="font-medium text-gray-900 dark:text-gray-100">{{ formatDate(card.updatedAt) }}</span>
         </div>
       </div>
     </div>

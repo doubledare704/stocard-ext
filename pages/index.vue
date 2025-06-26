@@ -9,7 +9,7 @@
         class="input-field pl-10"
         @input="handleSearch"
       >
-      <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
       </svg>
     </div>
@@ -26,17 +26,17 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <p class="mt-2 text-gray-600">Loading your cards...</p>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Loading your cards...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="filteredCards.length === 0 && !searchQuery" class="text-center py-12">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
       </svg>
-      <h3 class="mt-4 text-lg font-medium text-gray-900">No store cards yet</h3>
-      <p class="mt-2 text-gray-600">Get started by adding your first loyalty card</p>
+      <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No store cards yet</h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Get started by adding your first loyalty card</p>
       <NuxtLink to="/add" class="mt-4 btn-primary max-w-xs mx-auto">
         Add Your First Card
       </NuxtLink>
@@ -44,11 +44,11 @@
 
     <!-- No Search Results -->
     <div v-else-if="filteredCards.length === 0 && searchQuery" class="text-center py-12">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
       </svg>
-      <h3 class="mt-4 text-lg font-medium text-gray-900">No cards found</h3>
-      <p class="mt-2 text-gray-600">Try adjusting your search terms</p>
+      <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No cards found</h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Try adjusting your search terms</p>
       <button @click="clearSearch" class="mt-4 btn-secondary max-w-xs mx-auto">
         Clear Search
       </button>
@@ -64,18 +64,18 @@
       >
         <div class="flex items-center justify-between">
           <div class="flex-1">
-            <h3 class="text-lg font-semibold text-gray-900">{{ card.storeName }}</h3>
-            <p class="text-sm text-gray-600 mt-1">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ card.storeName }}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {{ formatBarcodeDisplay(card.barcodeData, card.barcodeType) }}
             </p>
-            <p class="text-xs text-gray-500 mt-2">
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
               Updated {{ formatDate(card.updatedAt) }}
             </p>
           </div>
           <div class="flex items-center space-x-2">
             <button
               @click.stop="editCard(card)"
-              class="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+              class="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -83,7 +83,7 @@
             </button>
             <button
               @click.stop="confirmDelete(card)"
-              class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+              class="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -96,14 +96,14 @@
 
     <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Delete Store Card</h3>
-        <p class="text-gray-600 mb-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Delete Store Card</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
           Are you sure you want to delete "{{ cardToDelete?.storeName }}"? This action cannot be undone.
         </p>
         <div class="flex space-x-3">
           <button @click="cancelDelete" class="btn-secondary flex-1">Cancel</button>
-          <button @click="deleteCard" class="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex-1">
+          <button @click="deleteCard" class="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex-1">
             Delete
           </button>
         </div>
