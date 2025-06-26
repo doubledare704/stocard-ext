@@ -83,10 +83,14 @@
     </main>
 
     <!-- PWA Install Prompt -->
-    <PWAInstallPrompt />
+    <ClientOnly>
+      <PWAInstallPrompt />
+    </ClientOnly>
 
     <!-- PWA Debugger (development only) -->
-    <PWADebugger />
+    <ClientOnly>
+      <PWADebugger />
+    </ClientOnly>
   </div>
 </template>
 

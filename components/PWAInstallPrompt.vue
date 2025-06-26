@@ -156,6 +156,9 @@ const handleTriggerInstall = () => {
 }
 
 onMounted(() => {
+  // Ensure we're on the client side
+  if (!process.client) return
+
   // Initialize PWA install detection
   initPWAInstall()
 
@@ -170,11 +173,11 @@ onMounted(() => {
   })
 
   // For iOS devices, show prompt after some time since they don't fire beforeinstallprompt
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isAppInstalled.value && !hasUserDismissed()) {
-    setTimeout(() => {
+  setTimeout(() => {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isAppInstalled.value && !hasUserDismissed()) {
       showInstallPrompt.value = true
-    }, 5000) // Show after 5 seconds on iOS
-  }
+    }
+  }, 5000) // Show after 5 seconds on iOS
 })
 
 onUnmounted(() => {

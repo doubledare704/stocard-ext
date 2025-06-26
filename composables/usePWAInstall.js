@@ -35,18 +35,21 @@ export const usePWAInstall = () => {
 
   // Handle beforeinstallprompt event
   const handleBeforeInstallPrompt = (e) => {
-    console.log('PWA: beforeinstallprompt event captured')
+    console.log('PWA: beforeinstallprompt event captured', e)
     e.preventDefault()
     deferredPrompt.value = e
     isInstallable.value = true
-    
+
     // Auto-show prompt after delay if not dismissed
     if (!localStorage.getItem('pwa-install-dismissed')) {
       setTimeout(() => {
         if (!isAppInstalled.value && !installPromptShown.value) {
+          console.log('PWA: Auto-showing install prompt')
           showInstallPrompt()
         }
       }, 3000)
+    } else {
+      console.log('PWA: Install prompt was previously dismissed')
     }
   }
 
