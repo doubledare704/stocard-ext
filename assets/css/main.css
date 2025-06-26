@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for mobile-first design */
+@layer base {
+  html {
+    font-family: system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 text-center block w-full;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors duration-200 text-center block w-full;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4 border border-gray-200;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  .store-card {
+    @apply card hover:shadow-lg transition-shadow duration-200 cursor-pointer;
+  }
+}
+
+/* Touch-friendly styles for mobile */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary {
+    @apply py-4 text-lg;
+  }
+  
+  .store-card {
+    @apply p-6;
+  }
+  
+  .input-field {
+    @apply py-4 text-lg;
+  }
+}

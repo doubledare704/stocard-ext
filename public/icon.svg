@@ -1,0 +1,47 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#3B82F6"/>
+  
+  <!-- Card Shape -->
+  <rect x="96" y="160" width="320" height="192" rx="16" fill="white"/>
+  
+  <!-- Card Details -->
+  <rect x="128" y="192" width="128" height="16" rx="8" fill="#E5E7EB"/>
+  <rect x="128" y="224" width="96" height="12" rx="6" fill="#E5E7EB"/>
+  
+  <!-- Barcode -->
+  <g transform="translate(128, 272)">
+    <rect x="0" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="8" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="16" y="0" width="6" height="32" fill="#1F2937"/>
+    <rect x="28" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="36" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="46" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="54" y="0" width="8" height="32" fill="#1F2937"/>
+    <rect x="68" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="76" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="86" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="94" y="0" width="6" height="32" fill="#1F2937"/>
+    <rect x="106" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="114" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="124" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="132" y="0" width="8" height="32" fill="#1F2937"/>
+    <rect x="146" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="154" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="164" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="172" y="0" width="6" height="32" fill="#1F2937"/>
+    <rect x="184" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="192" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="202" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="210" y="0" width="8" height="32" fill="#1F2937"/>
+    <rect x="224" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="232" y="0" width="4" height="32" fill="#1F2937"/>
+    <rect x="242" y="0" width="2" height="32" fill="#1F2937"/>
+    <rect x="250" y="0" width="6" height="32" fill="#1F2937"/>
+  </g>
+  
+  <!-- Plus Icon (for add functionality) -->
+  <circle cx="384" cy="384" r="32" fill="#10B981"/>
+  <rect x="376" y="376" width="16" height="4" rx="2" fill="white"/>
+  <rect x="382" y="370" width="4" height="16" rx="2" fill="white"/>
+</svg>
