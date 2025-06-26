@@ -64,10 +64,15 @@
       >
         <div class="flex items-center justify-between">
           <div class="flex-1">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ card.storeName }}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {{ formatBarcodeDisplay(card.barcodeData, card.barcodeType) }}
-            </p>
+            <h3 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">{{ card.storeName }}</h3>
+            <div class="mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                {{ card.barcodeType === 'qr' ? '📱 QR Code' : '📊 Barcode' }}
+              </p>
+              <p class="text-sm sm:text-base font-mono text-gray-800 dark:text-gray-200 break-all font-medium">
+                {{ card.barcodeData }}
+              </p>
+            </div>
             <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
               Updated {{ formatDate(card.updatedAt) }}
             </p>

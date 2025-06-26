@@ -222,11 +222,52 @@
           </div>
         </div>
 
-        <!-- Current Barcode Data -->
-        <div v-if="form.barcodeData" class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <p class="text-sm font-medium text-green-800 dark:text-green-400">Barcode Data:</p>
-          <p class="text-sm text-green-700 dark:text-green-300 font-mono break-all">{{ form.barcodeData }}</p>
-          <p class="text-xs text-green-600 dark:text-green-400 mt-1">Type: {{ form.barcodeType }}</p>
+        <!-- Current Barcode Data - Enhanced Preview -->
+        <div v-if="form.barcodeData" class="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-xl">
+          <div class="text-center">
+            <p class="text-lg font-semibold text-green-800 dark:text-green-400 mb-4">
+              {{ form.barcodeType === 'qr' ? '📱 QR Code Detected' : '📊 Barcode Detected' }}
+            </p>
+
+            <!-- Visual representation -->
+            <div v-if="form.barcodeType === 'qr'" class="mb-4">
+              <!-- QR Code visual -->
+              <div class="mx-auto mb-4 bg-gray-900 rounded-lg p-4 max-w-48">
+                <div class="grid grid-cols-6 gap-1">
+                  <div v-for="n in 36" :key="n"
+                       class="aspect-square rounded-sm"
+                       :class="Math.random() > 0.5 ? 'bg-white' : 'bg-gray-900'">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else class="mb-4">
+              <!-- Barcode visual -->
+              <div class="flex justify-center p-4 bg-white rounded-lg">
+                <div class="flex space-x-px">
+                  <div v-for="n in 25" :key="n"
+                       class="bg-gray-900"
+                       :style="{
+                         width: Math.random() > 0.6 ? '3px' : '2px',
+                         height: '80px'
+                       }">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Large, readable data -->
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-dashed border-green-300 dark:border-green-600">
+              <p class="text-lg sm:text-xl font-mono text-green-700 dark:text-green-300 break-all font-bold">
+                {{ form.barcodeData }}
+              </p>
+            </div>
+
+            <p class="text-sm text-green-600 dark:text-green-400 mt-3 font-medium">
+              Type: {{ form.barcodeType.toUpperCase() }}
+            </p>
+          </div>
         </div>
 
         <p v-if="errors.barcodeData" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.barcodeData }}</p>

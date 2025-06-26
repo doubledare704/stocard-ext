@@ -42,25 +42,49 @@
       </div>
       
       <!-- Barcode Display Area -->
-      <div class="bg-white rounded-lg p-4 text-center">
+      <div class="bg-white rounded-lg p-6 text-center">
         <div class="text-gray-900">
-          <!-- Simple barcode visualization -->
-          <div v-if="card.barcodeType === 'qr'" class="mb-3">
-            <div class="text-sm text-gray-600 mb-2">QR Code</div>
-            <div class="bg-gray-900 text-white p-4 rounded font-mono text-xs break-all">
+          <!-- QR Code visualization -->
+          <div v-if="card.barcodeType === 'qr'" class="mb-6">
+            <div class="text-lg font-semibold text-gray-700 mb-4">QR Code</div>
+            <!-- Large QR code placeholder -->
+            <div class="qr-visual mx-auto mb-4 bg-gray-900 rounded-lg p-6 max-w-xs">
+              <div class="grid grid-cols-8 gap-1">
+                <div v-for="n in 64" :key="n"
+                     class="aspect-square rounded-sm"
+                     :class="Math.random() > 0.5 ? 'bg-white' : 'bg-gray-900'">
+                </div>
+              </div>
+            </div>
+            <!-- Large, readable barcode data -->
+            <div class="barcode-display bg-gray-100 text-gray-900 p-6 rounded-lg font-mono text-lg sm:text-xl break-all border-2 border-dashed border-gray-300 select-all cursor-pointer hover:bg-gray-200 transition-colors"
+                 @click="copyToClipboard(card.barcodeData)"
+                 title="Tap to copy">
               {{ card.barcodeData }}
             </div>
           </div>
-          
-          <div v-else class="mb-3">
-            <div class="text-sm text-gray-600 mb-2">Barcode</div>
-            <!-- Simple barcode representation -->
-            <div class="flex justify-center mb-2">
+
+          <!-- Traditional Barcode visualization -->
+          <div v-else class="mb-6">
+            <div class="text-lg font-semibold text-gray-700 mb-4">Barcode</div>
+            <!-- Much larger barcode representation -->
+            <div class="barcode-visual flex justify-center mb-4 p-6 bg-gray-50 rounded-lg">
               <div class="flex space-x-px">
-                <div v-for="n in 20" :key="n" class="bg-gray-900 h-12" :style="{ width: Math.random() > 0.5 ? '2px' : '4px' }"></div>
+                <div v-for="n in 40" :key="n"
+                     class="bg-gray-900"
+                     :style="{
+                       width: Math.random() > 0.6 ? '4px' : Math.random() > 0.3 ? '3px' : '5px',
+                       height: '140px'
+                     }">
+                </div>
               </div>
             </div>
-            <div class="font-mono text-lg font-bold">{{ card.barcodeData }}</div>
+            <!-- Large, readable barcode number -->
+            <div class="barcode-display font-mono text-xl sm:text-3xl font-bold text-gray-900 bg-gray-100 p-6 rounded-lg border-2 border-dashed border-gray-300 select-all cursor-pointer hover:bg-gray-200 transition-colors"
+                 @click="copyToClipboard(card.barcodeData)"
+                 title="Tap to copy">
+              {{ card.barcodeData }}
+            </div>
           </div>
         </div>
       </div>
@@ -206,6 +230,30 @@ const copyBarcodeData = async () => {
     // Fallback for older browsers
     const textArea = document.createElement('textarea')
     textArea.value = card.value.barcodeData
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    copied.value = true
+    setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  }
+}
+
+// Alternative copy function for direct click on barcode
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    copied.value = true
+    setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error)
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea')
+    textArea.value = text
     document.body.appendChild(textArea)
     textArea.select()
     document.execCommand('copy')

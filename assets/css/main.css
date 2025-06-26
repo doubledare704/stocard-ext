@@ -47,12 +47,26 @@
   .btn-secondary {
     @apply py-4 text-lg;
   }
-  
+
   .store-card {
     @apply p-6;
   }
-  
+
   .input-field {
     @apply py-4 text-lg;
+  }
+
+  /* Enhanced barcode display for mobile */
+  .barcode-display {
+    @apply text-lg leading-relaxed;
+  }
+
+  .barcode-visual {
+    min-height: 100px;
+  }
+
+  .qr-visual {
+    min-width: 200px;
+    min-height: 200px;
   }
 }
