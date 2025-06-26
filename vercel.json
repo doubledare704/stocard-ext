@@ -31,7 +31,7 @@
       ]
     },
     {
-      "source": "/workbox-*.js",
+      "source": "/workbox-:match*",
       "headers": [
         {
           "key": "Content-Type",
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "source": "/(.*\\.(png|jpg|jpeg|gif|svg|ico|webp))",
+      "source": "/:all*.(png|jpg|jpeg|gif|svg|ico|webp)",
       "headers": [
         {
           "key": "Cache-Control",
