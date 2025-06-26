@@ -1,4 +1,5 @@
 import jsQR from 'jsqr'
+import Quagga from 'quagga'
 
 export const useBarcodeReader = () => {
   // Read QR code from image data
@@ -12,12 +13,46 @@ export const useBarcodeReader = () => {
     }
   }
 
-  // Read barcode from image using Quagga (will be implemented when image is processed)
+  // Read barcode from image using Quagga
   const readBarcode = async (imageElement) => {
     return new Promise((resolve) => {
-      // For now, we'll focus on QR codes and manual entry
-      // Quagga integration can be added later for more complex barcode types
-      resolve(null)
+      try {
+        // Create a canvas to work with the image
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+
+        canvas.width = imageElement.width || imageElement.naturalWidth
+        canvas.height = imageElement.height || imageElement.naturalHeight
+        ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height)
+
+        // Configure Quagga for barcode detection
+        Quagga.decodeSingle({
+          decoder: {
+            readers: [
+              'code_128_reader',
+              'ean_reader',
+              'ean_8_reader',
+              'code_39_reader',
+              'code_39_vin_reader',
+              'codabar_reader',
+              'upc_reader',
+              'upc_e_reader',
+              'i2of5_reader'
+            ]
+          },
+          locate: true,
+          src: canvas.toDataURL()
+        }, (result) => {
+          if (result && result.codeResult) {
+            resolve({ data: result.codeResult.code, type: 'barcode' })
+          } else {
+            resolve(null)
+          }
+        })
+      } catch (error) {
+        console.error('Error reading barcode:', error)
+        resolve(null)
+      }
     })
   }
 
@@ -32,31 +67,42 @@ export const useBarcodeReader = () => {
       const reader = new FileReader()
       reader.onload = (e) => {
         const img = new Image()
-        img.onload = () => {
+        img.onload = async () => {
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
-          
+
+          // Set canvas size to image size
           canvas.width = img.width
           canvas.height = img.height
+
+          // Draw image to canvas
           ctx.drawImage(img, 0, 0)
-          
+
+          // Get image data for QR code detection
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          
+
           // Try QR code first
           const qrResult = readQRCode(imageData)
           if (qrResult) {
+            console.log('QR code detected:', qrResult.data)
             resolve(qrResult)
             return
           }
-          
+
           // If no QR code found, try barcode reading
-          readBarcode(img).then(barcodeResult => {
+          try {
+            const barcodeResult = await readBarcode(img)
             if (barcodeResult) {
+              console.log('Barcode detected:', barcodeResult.data)
               resolve(barcodeResult)
             } else {
+              console.log('No barcode or QR code detected in image')
               resolve(null)
             }
-          })
+          } catch (error) {
+            console.error('Error during barcode detection:', error)
+            resolve(null)
+          }
         }
         
         img.onerror = () => {

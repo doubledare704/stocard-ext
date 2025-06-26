@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <NuxtRouteAnnouncer />
+    <Analytics />
 
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
@@ -24,6 +25,16 @@
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+              </svg>
+            </NuxtLink>
+            <NuxtLink
+              to="/test-error"
+              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              :class="{ 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400': $route.path === '/test-error' }"
+              title="Test Error Tracking"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
               </svg>
             </NuxtLink>
             <NuxtLink
@@ -65,6 +76,7 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { Analytics } from '@vercel/analytics/nuxt'
 import {useTheme} from "~/nuxt-app/composables/useTheme.js";
 
 // Theme composable

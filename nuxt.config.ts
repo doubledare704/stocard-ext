@@ -2,12 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
-
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@vite-pwa/nuxt',
-    '@vueuse/nuxt'
-  ],
+  modules: ['@nuxtjs/tailwindcss', '@vite-pwa/nuxt', '@vueuse/nuxt', '@sentry/nuxt/module'],
 
   // PWA Configuration
   pwa: {
@@ -71,5 +66,18 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#1f2937', media: '(prefers-color-scheme: dark)' },
       ],
     },
+  },
+
+  sentry: {
+    sourceMapsUploadOptions: {
+      org: 'oleksiy-av',
+      project: 'stocard',
+    },
+
+    autoInjectServerSentry: 'top-level-import',
+  },
+
+  sourcemap: {
+    client: 'hidden',
   },
 })
